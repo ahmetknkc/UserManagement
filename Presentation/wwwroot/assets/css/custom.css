@@ -1,0 +1,11 @@
+tbody tr:hover {
+  color: white !important ;
+  transition: 0.3s;
+  background-color: #1b1b1bda;
+}
+
+tr,
+.btn:hover,
+.btn {
+  transition: 0.3s;
+}

@@ -5,22 +5,21 @@
 
 @using Microsoft.AspNetCore.Identity
 
+
 @model IEnumerable<IdentityUser>
-@{
-    UserManager<IdentityUser> _userManager = ViewBag.userManager;
-}
 
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
 
-
+@using Presentation.Controllers
 
 
 
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title">Hoverable Table</h4>
+            <h4 class="card-title">Users</h4>
             <p class="card-description">
-                Add class <code>.table-hover</code>
             </p>
             <div class="table-responsive">
                 <table class="table">
@@ -33,26 +32,46 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (IdentityUser item in Model)
+                        @{
+                            var jsonRoles = ViewBag.roles;
+                        }
+
+
+                        @foreach (UserRolesViewModel item in jsonRoles)
                         {
                             <tr>
                                 <td>@item.UserName</td>
-                                <td>@item.Email</td>
+                                <td>@item.mail</td>
                                 <td>
-                                    @foreach (var role in await _userManager.GetRolesAsync(item))
-                                    {
-                                        <label class="badge badge-outline-danger"> @role </label> Write("&nbsp;");
 
+
+                                    @foreach (var role in item.Roles)
+                                    {
+                                        <label class="badge badge-outline-@{
+                                            Write(
+                                                role == "Admin" ? "danger" : 
+                                                    role == "Accountant" ? "primary" :
+                                                        role == "Software" ? "success" :
+                                                            role == "User" ? "secondary" : 
+                                                "info" 
+                                                
+                                                );
+                                        } ">
+                                            @role
+                                        </label>
+                                        WriteLiteral("&nbsp;");
                                     }
-                                   
+
+
+
                                 </td>
                                 <td class="text-danger">
 
-                                    <button id="@item.Id" type="button" class=" btn-outline-success btn btn-sm btn-icon-text">
+                                    <button id="@item.UserId" type="button" class=" btn-outline-success btn btn-sm btn-icon-text">
                                         <i class="ti-pencil" style="margin-left: -2px;"></i>
                                     </button>
 
-                                    <button id="@item.Id" type="button" class=" btn-outline-danger btn btn-sm btn-icon-text">
+                                    <button id="@item.UserId" type="button" class=" btn-outline-danger btn btn-sm btn-icon-text">
                                         <i class="ti-trash" style="margin-left: -2px;"></i>
                                     </button>
                                 </td>
@@ -61,30 +80,7 @@
                             </tr>
 
                         }
-                        <tr>
-                            <td>Jacob</td>
-                            <td>Photoshop</td>
-                            <td>
-                                <label class="badge badge-outline-danger">Admin</label> &nbsp;
-                                <label class="badge badge-outline-primary">accountant</label>&nbsp;
-                                <label class="badge badge-outline-success">Software</label>&nbsp;
-                                <label class="badge badge-outline-secondary">User</label> &nbsp;
-                            </td>
-                            <td class="text-danger">
 
-                                <button type="button"
-                                        class=" btn-outline-success btn btn-sm btn-icon-text">
-                                    <i class="ti-pencil" style="margin-left: -2px;"></i>
-                                </button>
-
-                                <button type="button"
-                                        class=" btn-outline-danger btn btn-sm btn-icon-text">
-                                    <i class="ti-trash" style="margin-left: -2px;"></i>
-                                </button>
-                            </td>
-
-
-                        </tr>
 
                     </tbody>
                 </table>

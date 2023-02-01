@@ -5,15 +5,18 @@ using System.Text;
 
 namespace Presentation.Controllers
 {
+
+    public class UserRolesViewModel
+    {
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        public string mail { get; set; }
+        public List<string> Roles { get; set; }
+    }
+
+
     public class AdminController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        public AdminController(UserManager<IdentityUser> userManager)
-        {
-            _userManager = userManager;
-        }
-
-
 
         public async Task<IActionResult> users()
         {
@@ -23,7 +26,13 @@ namespace Presentation.Controllers
             var jsonString = await response.Content.ReadAsStringAsync();
             var values = JsonConvert.DeserializeObject<List<IdentityUser>>(jsonString);
 
-            ViewBag.userManager = _userManager;
+
+            response = await httpClient.GetAsync("https://localhost:7149/api/Role");
+            jsonString = await response.Content.ReadAsStringAsync();
+            var roles = JsonConvert.DeserializeObject<List<UserRolesViewModel>>(jsonString);
+
+            ViewBag.roles = roles;
+
             return View(values);
         }
 

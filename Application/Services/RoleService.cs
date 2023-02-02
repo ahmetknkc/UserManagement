@@ -18,18 +18,43 @@ namespace Application.Services
         //Task UpdateRoleAsync(IdentityRole role);
         //Task DeleteRoleAsync(int id);
 
+        Task<IActionResult> DeleteUserRole(string userId, string roleName);
+        Task<IActionResult> GiveRole(string userId, string roleName);
+        Task<IActionResult> CreateRole(string roleName);
+
 
         IQueryable<IdentityRole> GetRolesNameAsync();
     }
 
     #endregion
+
+
+
+
     public class RoleService : ControllerBase, IRoleService
     {
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public RoleService(RoleManager<IdentityRole> roleManager)
+        public RoleService(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             _roleManager = roleManager;
+            _userManager = userManager;
+        }
+
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUserRole(string userId, string roleName)
+        {
+            IdentityUser user = await _userManager.FindByIdAsync(userId);
+
+            var result = _userManager.RemoveFromRoleAsync(user, roleName);
+
+
+            if (result.Result.Succeeded)
+                return Ok();
+
+            return BadRequest();
         }
 
         public IQueryable<IdentityRole> GetRolesNameAsync()
@@ -37,44 +62,26 @@ namespace Application.Services
             return _roleManager.Roles;
         }
 
+        public async Task<IActionResult> GiveRole(string userId, string roleName)
+        {
+            IdentityUser user = await _userManager.FindByIdAsync(userId);
 
-        //    public async Task<IEnumerable<Role>> GetRolesAsync()
-        //    {
-        //        return await _roleManager.Roles.ToListAsync();
-        //    }
+            await _userManager.AddToRoleAsync(user, roleName);
+            return Ok();
+        }
 
-        //    public async Task<Role> GetRoleAsync(int id)
-        //    {
-        //        return await _roleManager.FindByIdAsync(id.ToString());
-        //    }
+        public async Task<IActionResult> CreateRole(string roleName)
+        {
+            IdentityRole roleExists = await _roleManager.FindByNameAsync(roleName);
 
-        //    public async Task<Role> CreateRoleAsync(Role role)
-        //    {
-        //        var result = await _roleManager.CreateAsync(role);
-        //        if (!result.Succeeded)
-        //        {
-        //            throw new Exception(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
-        //        }
-        //        return role;
-        //    }
+            if (roleExists != null)
+            {
+                Console.WriteLine("__ Bad Request");
+                return BadRequest();
+            }
+            await _roleManager.CreateAsync(new IdentityRole() { Name = roleName });
+            return Ok();
+        }
 
-        //    public async Task UpdateRoleAsync(Role role)
-        //    {
-        //        var result = await _roleManager.UpdateAsync(role);
-        //        if (!result.Succeeded)
-        //        {
-        //            throw new Exception(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
-        //        }
-        //    }
-
-        //    public async Task DeleteRoleAsync(int id)
-        //    {
-        //        var role = await _roleManager.FindByIdAsync(id.ToString());
-        //        var result = await _roleManager.DeleteAsync(role);
-        //        if (!result.Succeeded)
-        //        {
-        //            throw new Exception(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
-        //        }
-        //    }
     }
 }

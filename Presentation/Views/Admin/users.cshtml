@@ -6,7 +6,7 @@
 @using Microsoft.AspNetCore.Identity
 
 
-@model List<Domain.UserWithRoles>
+@model List<Domain.Models.Swagger.UserWithRoles>
 
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
@@ -35,7 +35,7 @@
 
 
 
-                        @foreach (Domain.UserWithRoles item in Model)
+                        @foreach (Domain.Models.Swagger.UserWithRoles item in Model)
                         {
                             <tr>
                                 <td>@item.User.UserName</td>

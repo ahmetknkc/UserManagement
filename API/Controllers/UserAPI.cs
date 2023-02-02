@@ -12,7 +12,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ManageUser : ControllerBase
+    public class UserAPI : ControllerBase
     {
 
         #region Props And Const
@@ -21,7 +21,7 @@ namespace API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
 
-        public ManageUser(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IUserService userService)
+        public UserAPI(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IUserService userService)
         {
             _userManager = userManager;
             _roleManager = roleManager;

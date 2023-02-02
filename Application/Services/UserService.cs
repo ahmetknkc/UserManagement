@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json;
-using Domain;
+using Domain.Models.Swagger;
 
 namespace Application.Services
 {

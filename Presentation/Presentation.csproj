@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Admin\Query\" />
     <Folder Include="wwwroot\assets\vendors\mdi\fonts\" />
   </ItemGroup>
 

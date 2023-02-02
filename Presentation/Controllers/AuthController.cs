@@ -33,7 +33,7 @@ namespace Presentation.Controllers
 
             if (results.IsValid)
             {
-                await new Http().PostJson("/api/ManageUser", rUser);
+                await new Http().PostJson("/api/UserAPI", rUser);
                 return RedirectToAction("Home");
             }
             else

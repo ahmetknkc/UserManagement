@@ -1,52 +1,65 @@
 ﻿@{
     Layout = "_adminLayout";
 }
-@model Domain.UserWithRoles
+@model Domain.Models.Swagger.UserWithRoles
 
-    <div class="row">
+<div class="row">
 
-        <div class="col-md-6 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Editing @Model.User.UserName. </h4>
-                    <p class="card-description">
-                        If you don't want to change the user's password, leave it blank.
-                    </p>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Editing @Model.User.UserName. </h4>
+                <p class="card-description">
+                    If you don't want to change the user's password, leave it blank.
+                </p>
 
-                    <form class="forms-sample material-form bordered ">
-                        <div class="form-group">
-                            <input type="text" asp-for="User.UserName" required="required">
-                            <label for="input" class="control-label text-muted">Username</label><i class="bar"></i>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" asp-for="User.Email" required="required">
-                            <label for="input" class="control-label text-muted">Email address</label><i class="bar"></i>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" required="required">
-                            <label for="input" class="control-label text-muted">New Password</label><i class="bar"></i>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Edit User Roles</h4>
-                    <p class="card-description">Add or subtract with one click.</p>
-                    <div class="template-demo">
-                        @foreach (var item in Model.Roles)
-                        {
-                            <button class="btn btn-outline-light"> @item </button>
-                        }
+                <form class="forms-sample material-form bordered ">
+                    <div class="form-group">
+                        <input type="text" asp-for="User.UserName" required="required">
+                        <label for="input" class="control-label text-muted">Username</label><i class="bar"></i>
                     </div>
+                    <div class="form-group">
+                        <input type="text" asp-for="User.Email" required="required">
+                        <label for="input" class="control-label text-muted">Email address</label><i class="bar"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" required="required">
+                        <label for="input" class="control-label text-muted">New Password</label><i class="bar"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Edit User Roles</h4>
+                <p class="card-description">Add or subtract with one click.</p>
+                <div class="template-demo">
+                    @foreach (var item in Model.Roles)
+                    {
+                        <button class="btn btn-success"> @item </button>
+                    }
+
+
+
+                    @if (ViewData["roles"] != null)
+                    {
+                        @foreach (var item in (List<Microsoft.AspNetCore.Identity.IdentityRole>)ViewData["roles"])
+                        {
+                            @if (Model.Roles.Find(x => x == item.Name) == null)
+                            {
+                                <button class="btn btn-outline-light"> @item.Name </button>
+                            }
+                        }
+                    }
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="col-md-12 text-center">
-        <button type="button" class="btn btn-outline-success"><span>Save Changes</span></button>
+<div class="col-md-12 text-center">
+    <button type="button" class="btn btn-outline-success"><span>Save Changes</span></button>
 
-    </div>
+</div>

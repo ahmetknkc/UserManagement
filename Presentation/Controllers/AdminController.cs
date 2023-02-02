@@ -1,5 +1,5 @@
 ﻿using API.Use;
-using Domain;
+using Domain.Models.Swagger;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -21,7 +21,7 @@ namespace Presentation.Controllers
             //var jsonString = await response.Content.ReadAsStringAsync();
             //var users = JsonConvert.DeserializeObject<List<UserWithRoles>>(json);
 
-            object? json = await new Http().GetJson("/api/ManageUser", new List<UserWithRoles>());
+            object? json = await new Http().GetJson("/api/UserAPI", new List<UserWithRoles>());
             Console.WriteLine(json);
             return View(json);
         }
@@ -31,8 +31,18 @@ namespace Presentation.Controllers
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
-            object? json = await new Http().GetJson($"/api/ManageUser/{id}", new UserWithRoles());
-            return View(json);
+            object? userData = await new Http().GetJson($"/api/UserAPI/{id}", new UserWithRoles());
+            object? roles = await new Http().GetJson($"/api/RoleAPI/", new List<IdentityRole>());
+
+            List<IdentityRole> viewBagRoles = new();
+            foreach (var item in (List<IdentityRole>)roles)
+            {
+                viewBagRoles.Add(item);
+            }
+
+            ViewData["roles"] = viewBagRoles;
+
+            return View(userData);
         }
 
     }

@@ -4,6 +4,7 @@ using Domain.Models.Authentication.SignUp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -63,9 +64,19 @@ namespace API.Controllers
 
 
         [HttpGet]
-        public  ActionResult<IEnumerable<RegisterUser>> GetUsers()
+        public  async Task<ActionResult<IEnumerable<RegisterUser>>> GetUsers()
         {
-            return Ok(_userManager.Users);
+            var users = await _userManager.Users.ToListAsync();
+            var roles = await _roleManager.Roles.ToListAsync();
+
+            var result = users.Select(user => new
+            {
+                user = user,
+                Roles = _userManager.GetRolesAsync(user).Result
+            });
+
+            return Ok(result);
+            //return Ok(_userManager.Users);
         }
 
 

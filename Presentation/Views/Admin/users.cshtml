@@ -6,7 +6,7 @@
 @using Microsoft.AspNetCore.Identity
 
 
-@model IEnumerable<IdentityUser>
+@model List<UserRolesViewModel>
 
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
@@ -32,16 +32,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @{
-                            var jsonRoles = ViewBag.roles;
-                        }
 
 
-                        @foreach (UserRolesViewModel item in jsonRoles)
+
+                        @foreach (UserRolesViewModel item in Model)
                         {
                             <tr>
-                                <td>@item.UserName</td>
-                                <td>@item.mail</td>
+                                <td>@item.User.UserName</td>
+                                <td>@item.User.Email</td>
                                 <td>
 
 
@@ -67,11 +65,11 @@
                                 </td>
                                 <td class="text-danger">
 
-                                    <button id="@item.UserId" type="button" class=" btn-outline-success btn btn-sm btn-icon-text">
+                                    <button id="@item.User.Id" type="button" class=" btn-outline-success btn btn-sm btn-icon-text">
                                         <i class="ti-pencil" style="margin-left: -2px;"></i>
                                     </button>
 
-                                    <button id="@item.UserId" type="button" class=" btn-outline-danger btn btn-sm btn-icon-text">
+                                    <button id="@item.User.Id" type="button" class=" btn-outline-danger btn btn-sm btn-icon-text">
                                         <i class="ti-trash" style="margin-left: -2px;"></i>
                                     </button>
                                 </td>

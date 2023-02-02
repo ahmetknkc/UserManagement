@@ -19,11 +19,22 @@ internal class Program
         builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("ConnStr")));
 
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IRoleService, RoleService>();
+
         builder.Services.AddHttpContextAccessor();
 
-        builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-            .AddEntityFrameworkStores<IdentityDbContext>()
-            .AddDefaultTokenProviders();
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+        {
+            options.Password.RequiredLength = 0;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireDigit = false;
+
+        }).AddEntityFrameworkStores<IdentityDbContext>().AddDefaultTokenProviders();
+
+
+
 
         builder.Services.AddAuthentication(options =>
         {

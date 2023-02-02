@@ -12,7 +12,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthenticationController : ControllerBase
+    public class ManageUser : ControllerBase
     {
 
         #region Props And Const
@@ -21,7 +21,7 @@ namespace API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
 
-        public AuthenticationController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IUserService userService)
+        public ManageUser(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IUserService userService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -36,6 +36,7 @@ namespace API.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterUser registerUser /*, string role = null*/ )
         {
             var result = await _userService.CreateUserAsync(registerUser);
+
             if (result is OkResult)
             {
                 return StatusCode(StatusCodes.Status201Created, new Response
@@ -53,8 +54,7 @@ namespace API.Controllers
                 var errorMessage = JObject.Parse(badRequest.Value?.ToString());
                 if (errorMessage != null)
                 {
-                    Console.WriteLine("errorMessage is not null.");
-                    return BadRequest(errorMessage["Message"].Value<string>());
+                    return BadRequest(errorMessage["message"].Value<string>());
                 }
             }
 
@@ -64,7 +64,7 @@ namespace API.Controllers
 
 
         [HttpGet]
-        public  async Task<ActionResult<IEnumerable<RegisterUser>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<IdentityUser>>> GetUsers()
         {
             var users = await _userManager.Users.ToListAsync();
             var roles = await _roleManager.Roles.ToListAsync();
@@ -80,20 +80,16 @@ namespace API.Controllers
         }
 
 
-
-
-
-
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<User>> GetUser(int id)
-        //{
-        //    var user = await _userService.GetUserAsync(id);
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(user);
-        //}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IdentityUser>> GetUserById(string id)
+        {
+            var user = await _userService.GetUserAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
 
 
         //[HttpPut("{id}")]

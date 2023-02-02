@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 
 internal class Program
 {
+    public const int swaggerPort = 7149;
+
+
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);

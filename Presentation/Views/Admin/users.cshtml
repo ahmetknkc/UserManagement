@@ -6,7 +6,7 @@
 @using Microsoft.AspNetCore.Identity
 
 
-@model List<UserRolesViewModel>
+@model List<Domain.UserWithRoles>
 
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
@@ -35,7 +35,7 @@
 
 
 
-                        @foreach (UserRolesViewModel item in Model)
+                        @foreach (Domain.UserWithRoles item in Model)
                         {
                             <tr>
                                 <td>@item.User.UserName</td>
@@ -65,13 +65,13 @@
                                 </td>
                                 <td class="text-danger">
 
-                                    <button id="@item.User.Id" type="button" class=" btn-outline-success btn btn-sm btn-icon-text">
+                                    <a href="/Admin/EditUser/@item.User.Id" target="_blank" type="button" class=" btn-outline-success btn btn-sm btn-icon-text">
                                         <i class="ti-pencil" style="margin-left: -2px;"></i>
-                                    </button>
+                                    </a>
 
-                                    <button id="@item.User.Id" type="button" class=" btn-outline-danger btn btn-sm btn-icon-text">
+                                    <a href="/Admin/DeleteUser/@item.User.Id" type="button" class=" btn-outline-danger btn btn-sm btn-icon-text">
                                         <i class="ti-trash" style="margin-left: -2px;"></i>
-                                    </button>
+                                    </a>
                                 </td>
 
 

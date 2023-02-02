@@ -1,4 +1,5 @@
-﻿using Domain.Models.Authentication.SignUp;
+﻿using Application.Services;
+using Domain.Models.Authentication.SignUp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,15 +14,20 @@ namespace API.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleController : ControllerBase
+    public class Role : ControllerBase
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<IdentityUser> _userManager;
 
-        public RoleController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        private readonly IRoleService _roleService;
+
+        public Role(IRoleService roleService)
         {
-            _roleManager = roleManager;
-            _userManager = userManager;
+            _roleService = roleService;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<IdentityRole>>> GetRoles()
+        {
+            return Ok(_roleService.GetRolesNameAsync());
         }
 
         //[HttpGet]

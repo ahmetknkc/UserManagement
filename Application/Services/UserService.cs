@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Nodes;
 using Newtonsoft.Json;
+using Domain;
 
 namespace Application.Services
 {
@@ -18,10 +19,10 @@ namespace Application.Services
     public interface IUserService
     {
         Task<IEnumerable<IdentityUser>> GetUsersAsync();
-        Task<IdentityUser> GetUserAsync(int id);
+        Task<UserWithRoles> GetUserAsync(string id);
         Task<IActionResult> CreateUserAsync(RegisterUser user);
         Task UpdateUserAsync(IdentityUser user);
-        Task DeleteUserAsync(int id);
+        Task DeleteUserAsync(string id);
     }
     #endregion
 
@@ -29,12 +30,13 @@ namespace Application.Services
     {
 
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserService( UserManager<IdentityUser> identityUserManager)
+
+        public UserService(UserManager<IdentityUser> identityUserManager, RoleManager<IdentityRole> roleManager)
         {
-
             _userManager = identityUserManager;
-
+            _roleManager = roleManager;
         }
 
 
@@ -44,9 +46,19 @@ namespace Application.Services
             return await _userManager.Users.ToListAsync();
         }
 
-        public async Task<IdentityUser> GetUserAsync(int id)
+        public async Task<UserWithRoles> GetUserAsync(string id)
         {
-            return await _userManager.FindByIdAsync(id.ToString());
+            var user = await _userManager.FindByIdAsync(id);
+            var roles = _userManager.GetRolesAsync(user).Result.ToList();
+            var result = new UserWithRoles
+            {
+                User = user,
+                Roles = roles
+            };
+
+            return result;
+
+
         }
 
 
@@ -67,7 +79,7 @@ namespace Application.Services
             {
                 Email = registerUser.email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = registerUser.userName
+                UserName = registerUser.username
             };
 
             var result = await _userManager.CreateAsync(user, registerUser.password);
@@ -75,6 +87,7 @@ namespace Application.Services
             {
                 string error = String.Join("\r\n", (from x in result.Errors
                                                     select $"{x.Description}"));
+
                 return new BadRequestObjectResult(new { message = error });
             }
             await _userManager.AddToRoleAsync(user, "User");
@@ -94,7 +107,7 @@ namespace Application.Services
             }
         }
 
-        public async Task DeleteUserAsync(int id)
+        public async Task DeleteUserAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             var result = await _userManager.DeleteAsync(user);

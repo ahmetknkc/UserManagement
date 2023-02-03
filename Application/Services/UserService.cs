@@ -21,6 +21,7 @@ namespace Application.Services
         Task<IEnumerable<IdentityUser>> GetUsersAsync();
         Task<UserWithRoles> GetUserAsync(string id);
         Task<IActionResult> CreateUserAsync(RegisterUser user);
+        Task<IdentityUser> Login(string username, string password);
         Task UpdateUserAsync(IdentityUser user);
         Task DeleteUserAsync(string id);
     }
@@ -31,12 +32,15 @@ namespace Application.Services
 
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-
-        public UserService(UserManager<IdentityUser> identityUserManager, RoleManager<IdentityRole> roleManager)
+        public UserService(UserManager<IdentityUser> identityUserManager,
+                    RoleManager<IdentityRole> roleManager,
+                    SignInManager<IdentityUser> signInManager)
         {
             _userManager = identityUserManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
 
@@ -60,9 +64,6 @@ namespace Application.Services
 
 
         }
-
-
-
 
         public async Task<IActionResult> CreateUserAsync(RegisterUser registerUser)
         {
@@ -95,6 +96,30 @@ namespace Application.Services
         }
 
 
+
+        public async Task<IdentityUser> Login(string username, string password)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            Console.WriteLine($"Login Username: {username}");
+            Console.WriteLine($"Login Password: {password}");
+            if (user != null)
+            {
+                Console.WriteLine("Login: user is not null.");
+
+                var result = await _signInManager.CanSignInAsync(user);
+
+                if (result)
+                {
+
+                    var loginResult = await _signInManager.PasswordSignInAsync(user, password, false, true);
+                    Console.WriteLine("Login: Login success.");
+                    if (loginResult.Succeeded)
+                        return user;
+                }
+            }
+            Console.WriteLine("Login: Bad Req.");
+            return null;
+        }
 
 
 

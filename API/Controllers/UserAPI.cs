@@ -1,12 +1,17 @@
 ﻿using Application.Services;
 using Domain.Models;
+using Domain.Models.Authentication.Login;
 using Domain.Models.Authentication.SignUp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace API.Controllers
 {
@@ -33,7 +38,7 @@ namespace API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterUser registerUser /*, string role = null*/ )
+        public async Task<IActionResult> Register([FromBody] RegisterUser registerUser /*, string role*/ )
         {
             var result = await _userService.CreateUserAsync(registerUser);
 
@@ -76,7 +81,6 @@ namespace API.Controllers
             });
 
             return Ok(result);
-            //return Ok(_userManager.Users);
         }
 
 
@@ -91,6 +95,48 @@ namespace API.Controllers
             return Ok(user);
         }
 
+        //[HttpGet("Login/{username}/{password}")]
+        //[ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IdentityUser))]
+        //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        //public async Task<ActionResult<IdentityUser>> Login(string username, string password)
+        //{
+        //    var user = await _userService.Login(username, password);
+        //    if (user == null)
+        //    {
+        //        return Unauthorized();
+        //    }
+        //    return Ok(user);
+        //}
+        [HttpPost("Login")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IdentityUser))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+
+        public async Task<ActionResult<IdentityUser>> Login([FromBody] LoginModel login)
+        {
+            var user = await _userService.Login(login.Username, login.Password);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            var claims = new[]
+            {
+            new Claim(ClaimTypes.Name, user.UserName)
+            };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
+            _configuration["Jwt:Issuer"],
+            claims,
+            expires: DateTime.Now.AddMinutes(30),
+            signingCredentials: creds);
+            var result = new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo
+            };
+
+            return Ok(result);
+        }
 
         //[HttpPut("{id}")]
         //public async Task<IActionResult> UpdateUser(string id, User user)

@@ -1,31 +1,50 @@
 ﻿using API.Use;
 using Application.ValidationRules;
+using Domain.Models.Authentication.Login;
 using Domain.Models.Authentication.SignUp;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Presentation.Models;
 using System.ComponentModel;
+using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text;
 
 namespace Presentation.Controllers
 {
+
+
+    [AllowAnonymous]
     public class AuthController : Controller
     {
 
-        [HttpGet]
-        public IActionResult Login()
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IAuthorizationService _authorizationService;
+
+        public AuthController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IAuthorizationService authorizationService)
         {
-            return View();
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _authorizationService = authorizationService;
         }
+
+
 
 
         [HttpGet]
         public IActionResult Register()
         {
-            return View();
+            return View(new RegisterUser());
         }
 
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterUser rUser)
         {
             RegisterValidator validator = new RegisterValidator();
@@ -45,23 +64,58 @@ namespace Presentation.Controllers
                 }
                 return View(rUser);
             }
-
-            //var httpClient = new HttpClient();
-            //var toJson = JsonConvert.SerializeObject(rUser);
-            //StringContent content = new StringContent(toJson, Encoding.UTF8, "application/json");
+        }
 
 
-            //var response = await httpClient.PostAsync(@"https://localhost:7149/api/Authentication", content);
+        [HttpGet]
+        public IActionResult Login(string returnUrl)
+        {
+            var isLogin = _signInManager.IsSignedIn(User);
+            if (isLogin)
+            {
+                return RedirectToAction("Home", "Index");
+            }
 
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    return RedirectToAction("Home");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("_Err: " + response.ToString());
-            //    return View();
-            //}
+            ViewBag.ReturnUrl = returnUrl;
+            return View(new LoginModel() { Password = "" });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginModel login, string returnUrl)
+        {
+            IdentityUser user = await _userManager.FindByNameAsync(login.Username);
+
+
+            var result = await _signInManager.PasswordSignInAsync(login.Username, login.Password, true, false);
+            if (result.Succeeded)
+            {
+
+                var identity = new ClaimsIdentity(IdentityConstants.ApplicationScheme);
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var authClaims = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.Name, user.UserName)
+                };
+                foreach (var role in userRoles)
+                    authClaims.Add(new Claim(ClaimTypes.Role, role));
+
+                identity.AddClaims(authClaims);
+
+                //await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme,new ClaimsPrincipal(identity));
+
+
+                return RedirectToAction("Users", "Admin");
+            }
+            return View(login);
+        }
+
+
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
     }
 }

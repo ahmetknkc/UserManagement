@@ -8,14 +8,33 @@ namespace API.Use
     public class Http
     {
 
-        public const int swaggerPort = 7149;
+
+        private string CheckUrl(string url)
+        {
+            if (url.StartsWith("/"))
+                url = url.Remove(0, 1);
+            return url;
+        }
+
+
+        public int swaggerPort = 7149;
 
 
         public async Task<object?> GetJson<T>(string url, T t)
         {
-            if (url.StartsWith("/"))
-                url = url.Remove(0, 1);
+            url = CheckUrl(url);
 
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync($"https://localhost:{swaggerPort}/{url}");
+            var jsonString = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<T>(jsonString);
+            httpClient.Dispose();
+
+            return result;
+        }
+        public async Task<object?> Post<T>(string url)
+        {
+            url = CheckUrl(url);
             using var httpClient = new HttpClient();
             var response = await httpClient.GetAsync($"https://localhost:{swaggerPort}/{url}");
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -26,12 +45,11 @@ namespace API.Use
         }
 
 
-
         public async Task<object?> PostJson<T>(string url, T content)
         {
 
-            if (url.StartsWith("/"))
-                url = url.Remove(0, 1);
+            url = CheckUrl(url);
+
 
             using var httpClient = new HttpClient();
             var toJson = JsonConvert.SerializeObject(content);

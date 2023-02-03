@@ -15,8 +15,8 @@ internal class Program
         var builder = WebApplication.CreateBuilder(args);
 
 
-        var configuration = builder.Configuration;
-        builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("ConnStr")));
+        string connStr = new DbConnections().IdentityDB;
+        builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(connStr));
 
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IRoleService, RoleService>();
@@ -59,6 +59,11 @@ internal class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
 
         app.UseHttpsRedirection();
         app.UseAuthorization();

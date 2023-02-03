@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<IdentityUser> _userManager;
+@inject SignInManager<IdentityUser> signInManager
+@{
+    Layout = null;
+
+    IdentityUser user = null;
+    if (signInManager.IsSignedIn(User))
+    {
+        user = await _userManager.FindByNameAsync(User.Identity.Name);
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    @if (user != null)
+    {
+        <text>   Welcome @user.UserName </text> Write("!");
+    }
+</head>
+<body>
+</body>
+</html>

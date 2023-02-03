@@ -2,14 +2,29 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Domain.Models.Authentication.Login;
+using System;
+using Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Domain.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+//using Application.DynamicRole;
 
 internal class Program
 {
     public const int swaggerPort = 7149;
-
-
     private static void Main(string[] args)
     {
+
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddControllersWithViews();
@@ -18,6 +33,9 @@ internal class Program
             options.AssumeDefaultVersionWhenUnspecified = true;
             options.ReportApiVersions = true;
         });
+
+
+
 
         builder.Services.AddHttpClient();
         builder.Services.AddSwaggerGen(c =>
@@ -39,6 +57,40 @@ internal class Program
             });
         });
 
+        //builder.Services.AddDbContext<IdentityDbContext>();
+        builder.Services.Configure<CookiePolicyOptions>(options =>
+        {
+            options.CheckConsentNeeded = context => true;
+            options.MinimumSameSitePolicy = SameSiteMode.None;
+        });
+
+        string connStr = new DbConnections().IdentityDB;
+
+        builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(connStr));
+        builder.Services.AddHttpContextAccessor();
+
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<IdentityDbContext>()
+            .AddDefaultTokenProviders();
+
+        builder.Services.AddControllersWithViews();
+        builder.Services.AddRazorPages();
+
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+            options.LoginPath = "/Auth/Login";
+            options.AccessDeniedPath = "/Home/Index";
+            options.SlidingExpiration = true;
+        });
+
+        builder.Services.AddAuthentication();
+        builder.Services.AddAuthorization();
+
+        //builder.Services.AddScoped<RoleManager<IdentityRole>>();
+
 
 
         var app = builder.Build();
@@ -55,8 +107,14 @@ internal class Program
         app.UseStaticFiles();
 
         app.UseRouting();
-
+        app.UseAuthentication();
         app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapDefaultControllerRoute();
+        });
+
 
         app.MapControllerRoute(
             name: "default",

@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace Infrastructure.Migrations
+namespace API.Migrations
 {
     /// <inheritdoc />
-    public partial class Create : Migration
+    public partial class Generate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -163,9 +163,10 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "2ed7974a-9ca9-4ef4-9865-579c7c71cc80", "3", "HR", "HR" },
-                    { "481eeb5c-a98b-41eb-ba03-2bdda3f0a338", "1", "Admin", "Admin" },
-                    { "6b78937b-5dff-4aef-b787-6432840c8dea", "2", "User", "User" }
+                    { "1a7da93a-0756-4016-b62b-9a009331b062", "061fcf4a-0cc6-48a7-adef-04aed65dbde4", "User", "USER" },
+                    { "48999941-7034-426d-a887-ee209ccaf21a", "7d336747-6d4f-4ad7-aaee-a01a22a5bd05", "software", "SOFTWARE" },
+                    { "94419dc9-4600-4c9f-85bb-b49bc1511331", "a8e02232-f246-44f8-830c-cb46bda538df", "accounting", "ACCOUNTING" },
+                    { "c9453812-3aa1-427f-a0bf-91034ba520e1", "84dd7fe6-ce16-4767-b2cf-0e9a8ed76baa", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -1,5 +1,6 @@
 ﻿@{
-    Layout = "";
+    ViewData["Title"] = "Login";
+    Layout = null;
 }
 @using Domain.Models.Authentication.Login
 @model LoginModel
@@ -12,7 +13,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Star Admin2 </title>
+    <title>User Manage - @ViewData["Title"] </title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="~/assets/vendors/feather/feather.css">
     <link rel="stylesheet" href="~/assets/vendors/mdi/css/materialdesignicons.min.css">
@@ -48,8 +49,11 @@
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" value="@ViewBag.ReturnUrl" />
 
-
-                                @*<form class="pt-3">*@
+                                
+                                @if (ViewBag.err == true)
+                                {
+                                    <label class="text-danger">Incorrect password or username.</label>
+                                }
                                 <div class="form-group">
                                     <label for="exampleInputEmail">Username</label>
                                     <div class="input-group">
@@ -71,7 +75,6 @@
                                                 <i class="ti-lock text-primary"></i>
                                             </span>
                                         </div>
-
                                         @{ var pass = Model.Password ?? "";}
                                         <input type="password" placeholder="Password" asp-for="Password" class="@inputClasses" value="@pass">
                                     </div>

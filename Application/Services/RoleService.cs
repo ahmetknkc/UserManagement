@@ -13,17 +13,12 @@ namespace Application.Services
     #region Interface
     public interface IRoleService
     {
-        //Task<IdentityRole> GetRoleAsync(int id);
-        //Task<IdentityRole> CreateRoleAsync(IdentityRole role);
-        //Task UpdateRoleAsync(IdentityRole role);
-        //Task DeleteRoleAsync(int id);
-
         Task<IActionResult> DeleteUserRole(string userId, string roleName);
         Task<IActionResult> GiveRole(string userId, string roleName);
         Task<IActionResult> CreateRole(string roleName);
 
 
-        IQueryable<IdentityRole> GetRolesNameAsync();
+         IQueryable<IdentityRole> GetRolesNameAsync();
     }
 
     #endregion
@@ -47,9 +42,7 @@ namespace Application.Services
         public async Task<IActionResult> DeleteUserRole(string userId, string roleName)
         {
             IdentityUser user = await _userManager.FindByIdAsync(userId);
-
             var result = _userManager.RemoveFromRoleAsync(user, roleName);
-
 
             if (result.Result.Succeeded)
                 return Ok();

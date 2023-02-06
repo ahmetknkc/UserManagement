@@ -15,11 +15,14 @@ internal class Program
         var builder = WebApplication.CreateBuilder(args);
 
 
-        string connStr = new DbConnections().IdentityDB;
-        builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(connStr));
+
+        builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(DbConnections.IdentityDB));
+        builder.Services.AddDbContext<EfDbContext>(options => options.UseSqlServer(DbConnections.EntityDB));
+
 
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IRoleService, RoleService>();
+        builder.Services.AddScoped<IMenuService, MenuService>();
 
         builder.Services.AddHttpContextAccessor();
 

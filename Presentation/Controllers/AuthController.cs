@@ -52,8 +52,16 @@ namespace Presentation.Controllers
 
             if (results.IsValid)
             {
+                if (await _userManager.FindByNameAsync(rUser.username) != null)
+                {
+                    if (await _userManager.FindByEmailAsync(rUser.email) != null)
+                        ModelState.AddModelError(nameof(rUser.email), "E-Mail already taken.");
+                    ModelState.AddModelError(nameof(rUser.username), "Username already taken.");
+                    return View(rUser);
+                }
+
                 await new Http().PostJson("/api/UserAPI", rUser);
-                return RedirectToAction("Home");
+                return RedirectToAction("Login", "Auth");
             }
             else
             {
@@ -68,30 +76,33 @@ namespace Presentation.Controllers
 
 
         [HttpGet]
-        public IActionResult Login(string returnUrl)
+        public IActionResult Login()
         {
             var isLogin = _signInManager.IsSignedIn(User);
             if (isLogin)
-            {
-                return RedirectToAction("Home", "Index");
-            }
-
-            ViewBag.ReturnUrl = returnUrl;
+                return RedirectToAction("Index", "Home");
             return View(new LoginModel() { Password = "" });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginModel login, string returnUrl)
+        public async Task<IActionResult> Login(LoginModel login /*, string returnUrl */)
         {
-            IdentityUser user = await _userManager.FindByNameAsync(login.Username);
+            ViewBag.ReturnUrl = "";
+            if (string.IsNullOrEmpty(login.Username) || string.IsNullOrEmpty(login.Password))
+            {
+                ViewBag.err = true;
+                return View(login);
+            }
 
+
+            IdentityUser user = await _userManager.FindByNameAsync(login.Username);
 
             var result = await _signInManager.PasswordSignInAsync(login.Username, login.Password, true, false);
             if (result.Succeeded)
             {
-
                 var identity = new ClaimsIdentity(IdentityConstants.ApplicationScheme);
+
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var authClaims = new List<Claim>()
                 {
@@ -99,14 +110,13 @@ namespace Presentation.Controllers
                 };
                 foreach (var role in userRoles)
                     authClaims.Add(new Claim(ClaimTypes.Role, role));
-
                 identity.AddClaims(authClaims);
 
-                //await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme,new ClaimsPrincipal(identity));
-
-
-                return RedirectToAction("Users", "Admin");
+                return RedirectToAction("Index", "Home");
             }
+
+
+            ViewBag.err = true;
             return View(login);
         }
 

@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Domain.Models.EntityFramework
 
 @inject UserManager<IdentityUser> _userManager;
 @inject SignInManager<IdentityUser> signInManager
@@ -12,17 +13,161 @@
     }
 }
 
-<!DOCTYPE html>
+@model List<Menu>
 
-<html>
+
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-    @if (user != null)
-    {
-        <text>   Welcome @user.UserName </text> Write("!");
-    }
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title> User Manage - Home </title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="~/assets/vendors/feather/feather.css">
+    <link rel="stylesheet" href="~/assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="~/assets/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="~/assets/vendors/typicons/typicons.css">
+    <link rel="stylesheet" href="~/assets/vendors/simple-line-icons/css/simple-line-icons.css">
+    <link rel="stylesheet" href="~/assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="~/assets/vendors/fullcalendar/fullcalendar.min.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="~/assets/css/vertical-layout-dark/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="https://www.turcom.com.tr/favicoTurcom.ico" />
+    <style>
+        .btn:hover {
+            transition: 0.3s !important;
+        }
+    </style>
 </head>
+
 <body>
+
+
+    <div class="container-scroller">
+        <!-- partial:../../partials/_navbar.html -->
+        <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+                <div class="me-3">
+                </div>
+                <div>
+                    <a class="navbar-brand brand-logo" href="/">
+                        <img src="https://www.turcom.com.tr/images/turcom-logo.png" style="width:300px; height:auto;" alt="logo" />
+                    </a>
+                    <a class="navbar-brand brand-logo-mini" href="/">
+                        <img src="https://www.turcom.com.tr/images/turcom-logo.png" alt="logo" />
+                    </a>
+                </div>
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-top">
+                <ul class="navbar-nav">
+                    @if (user != null)
+                    {
+                        <li class="font-weight-semibold d-none d-lg-block ms-0">
+
+                            <h3 class="welcome-text">Welcome <span class="text-white fw-bold"> @user.UserName </span></h3>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item dropdown d-none d-lg-block">
+                            <a href="/Auth/Login" class="btn btn-outline-success btn-rounded">Login</a>
+                        </li>
+                        <li class="nav-item d-none d-lg-block">
+                            <a href="/Auth/Register" class="btn btn-success btn-rounded ">Register</a>
+                        </li>
+                    }
+
+                </ul>
+                @if (user != null)
+                {
+                    <ul class="navbar-nav ms-auto">
+
+                        @if (_userManager.GetRolesAsync(user).Result.Count > 1 || await _userManager.IsInRoleAsync(user, "Admin"))
+                        {
+                            <li class="nav-item dropdown d-none d-lg-block">
+                                <a type="button" href="/Admin/" class="btn btn-outline-primary btn-rounded btn-md">Admin</a>
+                            </li>
+                        }
+
+
+                        <li class="nav-item dropdown d-none d-lg-block">
+                            <a class="btn btn-outline-danger btn-sm btn-rounded" href="/Auth/Logout"> Logout </a>
+                        </li>
+                    </ul>
+                }
+            </div>
+        </nav>
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <!-- partial:../../partials/_sidebar.html -->
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            </nav>
+            <!-- partial -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <h4>Main Menu</h4>
+                    <br />
+                    <br />
+
+                    <div class="row fc-external-events">
+
+
+                        @foreach (var item in Model)
+                        {
+                            <div class="col-md-4 grid-margin stretch-card rounded-10">
+                                <div class="fc-event col-md-12 ">
+                                    <div class="card">
+                                        <div class="card-title">@item.Title</div>
+                                        <div class="card-body">
+                                            @item.Content
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+
+
+
+
+                </div>
+                <!-- content-wrapper ends -->
+                <!-- partial:../../partials/_footer.html -->
+                <footer class="footer" style="position:absolute; bottom:0px;">
+                    <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Copyright © @DateTime.Now.Year. All rights reserved.</span>
+                    </div>
+                </footer>
+
+                <!-- partial -->
+            </div>
+            <!-- main-panel ends -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="~/assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="~/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="~/assets/js/off-canvas.js"></script>
+    <script src="~/assets/js/hoverable-collapse.js"></script>
+    <script src="~/assets/js/template.js"></script>
+    <script src="~/assets/js/settings.js"></script>
+    <script src="~/assets/js/todolist.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <!-- End custom js for this page-->
 </body>
+
 </html>

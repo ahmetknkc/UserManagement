@@ -1,65 +1,96 @@
 ﻿@{
     Layout = "_adminLayout";
+    ViewData["Title"] = "User Editing";
 }
 @model Domain.Models.Swagger.UserWithRoles
 
-<div class="row">
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<IdentityUser> _userManager;
+@inject SignInManager<IdentityUser> signInManager
+@{
 
-    <div class="col-md-6 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Editing @Model.User.UserName. </h4>
-                <p class="card-description">
-                    If you don't want to change the user's password, leave it blank.
-                </p>
+    IdentityUser user = _userManager.FindByIdAsync(Model.User.Id).Result;
+}
+<form class="forms-sample material-form bordered" method="post" action="/Admin/User/SaveChanges/">
+    @Html.HiddenFor(x => x.User.Id)
 
-                <form class="forms-sample material-form bordered ">
+    <div class="row">
+
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Editing @Model.User.UserName. </h4>
+                    <p class="card-description">
+                    </p>
+
                     <div class="form-group">
-                        <input type="text" asp-for="User.UserName" required="required">
+                        @*<input type="text" asp-for="User.UserName" required="required">*@
+                        @Html.TextBoxFor(x => x.User.UserName, new { @required = "required" })
                         <label for="input" class="control-label text-muted">Username</label><i class="bar"></i>
                     </div>
                     <div class="form-group">
-                        <input type="text" asp-for="User.Email" required="required">
+                        @*<input type="text" asp-for="User.Email" required="required">*@
+                        @Html.TextBoxFor(x => x.User.Email, new { @required = "required" })
                         <label for="input" class="control-label text-muted">Email address</label><i class="bar"></i>
                     </div>
-                    <div class="form-group">
-                        <input type="text" required="required">
-                        <label for="input" class="control-label text-muted">New Password</label><i class="bar"></i>
-                    </div>
-                </form>
+
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-6 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Edit User Roles</h4>
-                <p class="card-description">Add or subtract with one click.</p>
-                <div class="template-demo">
-                    @foreach (var item in Model.Roles)
-                    {
-                        <button class="btn btn-success"> @item </button>
-                    }
-
-
-
-                    @if (ViewData["roles"] != null)
-                    {
-                        @foreach (var item in (List<Microsoft.AspNetCore.Identity.IdentityRole>)ViewData["roles"])
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Edit User Roles</h4>
+                    <p class="card-description">Add or subtract with one click.</p>
+                    <div class="template-demo">
+                        @* User Roles *@
+                        @foreach (var item in Model.Roles)
                         {
-                            @if (Model.Roles.Find(x => x == item.Name) == null)
+                            @*<button class="btn btn-success" status="have"> @item </button>*@
+                            <a onclick="Role('@user.Id','@item')" id="@item" status="have" class="btn btn-success"> @item</a>
+                        }
+
+
+
+                        @if (ViewData["roles"] != null)
+                        {
+                            @foreach (var item in (List<IdentityRole>)ViewData["roles"] ?? new List<IdentityRole>())
                             {
-                                <button class="btn btn-outline-light"> @item.Name </button>
+                                @if (Model.Roles.Find(x => x == item.Name) == null)
+                                {
+                                    <a onclick="Role('@user.Id','@item.Name')" id="@item.Name" status="havent" class="btn btn-outline-light"> @item.Name </a>
+                                }
                             }
                         }
-                    }
+
+
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="col-md-12 text-center">
-    <button type="button" class="btn btn-outline-success"><span>Save Changes</span></button>
+    <div class="col-md-12 text-center">
+        <button type="submit" class="btn btn-outline-success"><span>Save Changes</span></button>
+    </div>
+</form>
 
-</div>
+<script>
+    function Role(userID, role) {
+        $.ajax({
+            url: '/Admin/UserToggleRole/' + userID + '/' + role,
+            type: 'GET'
+        });
+
+        var status = $(`#${role}`).attr("status");
+        if (status == "havent") {
+            $(`#${role}`).removeClass("btn-outline-light").addClass("btn-success");
+            $(`#${role}`).attr("status", "have");
+        }
+        else {
+            $(`#${role}`).removeClass("btn-success").addClass("btn-outline-light");
+            $(`#${role}`).attr("status", "havent");
+        }
+    }
+</script>

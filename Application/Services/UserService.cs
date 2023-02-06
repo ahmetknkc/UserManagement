@@ -23,7 +23,7 @@ namespace Application.Services
         Task<IActionResult> CreateUserAsync(RegisterUser user);
         Task<IdentityUser> Login(string username, string password);
         Task UpdateUserAsync(IdentityUser user);
-        Task DeleteUserAsync(string id);
+        Task<IActionResult> DeleteUserAsync(string id);
     }
     #endregion
 
@@ -91,7 +91,16 @@ namespace Application.Services
 
                 return new BadRequestObjectResult(new { message = error });
             }
-            await _userManager.AddToRoleAsync(user, "User");
+
+            string role = "User";
+            if (_userManager.Users.Count() <= 1)
+            {
+                Console.WriteLine("First user is registered!");
+                role = "Admin";
+            }
+
+            await _userManager.AddToRoleAsync(user, role);
+
             return Ok();
         }
 
@@ -132,14 +141,17 @@ namespace Application.Services
             }
         }
 
-        public async Task DeleteUserAsync(string id)
+        public async Task<IActionResult> DeleteUserAsync(string id)
         {
-            var user = await _userManager.FindByIdAsync(id.ToString());
+            Console.WriteLine("-----------------");
+            Console.WriteLine("id ="+id);
+            Console.WriteLine("-----------------");
+            var user = await _userManager.FindByIdAsync(id);
             var result = await _userManager.DeleteAsync(user);
+
             if (!result.Succeeded)
-            {
-                throw new Exception(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
-            }
+                return BadRequest();
+            return Ok();
         }
 
 

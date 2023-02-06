@@ -138,23 +138,12 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateUser(string id, User user)
-        //{
-        //    if (id != user.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    await _userService.UpdateUserAsync(user);
-        //    return NoContent();
-        //}
-
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteUser(int id)
-        //{
-        //    await _userService.DeleteUserAsync(id);
-        //    return NoContent();
-        //}
+        [HttpPost("Delete/{id}")]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            await _userService.DeleteUserAsync(id);
+            return Ok();
+        }
 
 
 

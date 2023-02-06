@@ -10,12 +10,6 @@ using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Domain.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
 //using Application.DynamicRole;
 
@@ -33,9 +27,7 @@ internal class Program
             options.AssumeDefaultVersionWhenUnspecified = true;
             options.ReportApiVersions = true;
         });
-
-
-
+         
 
         builder.Services.AddHttpClient();
         builder.Services.AddSwaggerGen(c =>
@@ -64,10 +56,19 @@ internal class Program
             options.MinimumSameSitePolicy = SameSiteMode.None;
         });
 
-        string connStr = new DbConnections().IdentityDB;
+        string connStr = DbConnections.IdentityDB;
 
         builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(connStr));
+
+
+        builder.Services.AddDbContext<EfDbContext>(options => options.UseSqlServer(DbConnections.EntityDB));
+
         builder.Services.AddHttpContextAccessor();
+
+        builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+        {
+            options.ValidationInterval = TimeSpan.Zero;
+        });
 
         builder.Services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<IdentityDbContext>()

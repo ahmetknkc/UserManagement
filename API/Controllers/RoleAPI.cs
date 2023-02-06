@@ -39,9 +39,12 @@ namespace API.Controllers
             return Ok(_roleService.GetRolesNameAsync());
         }
 
-        [HttpDelete("RemoveUserRole")]
-        public async Task<ActionResult<IEnumerable<IdentityRole>>> RemoveUserRole([FromBody] UserIdAndRoleId? IDs)
+        [HttpPost("TakeRole")]
+        public async Task<ActionResult<IEnumerable<IdentityRole>>> TakeRole([FromBody] UserIdAndRoleId? IDs)
         {
+            IdentityUser user = await _userManager.FindByIdAsync(IDs?.UserId);
+            if (user is null) return BadRequest();
+
             await _roleService.DeleteUserRole(IDs?.UserId ?? "", IDs?.RoleName ?? "");
             return Ok();
         }

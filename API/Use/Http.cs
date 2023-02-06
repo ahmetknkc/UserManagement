@@ -49,14 +49,12 @@ namespace API.Use
         {
 
             url = CheckUrl(url);
-
-
             using var httpClient = new HttpClient();
             var toJson = JsonConvert.SerializeObject(content);
             StringContent strContent = new StringContent(toJson, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync($"https://localhost:{swaggerPort}/{url}", strContent);
 
-            if (response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode || response != null)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject(responseString);

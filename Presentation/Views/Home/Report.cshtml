@@ -1,0 +1,276 @@
+﻿
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Report</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="~/assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="~/assets/vendors/typicons/typicons.css">
+    <link rel="stylesheet" href="~/assets/vendors/simple-line-icons/css/simple-line-icons.css">
+    <link rel="stylesheet" href="~/assets/vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="~/assets/css/vertical-layout-dark/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="https://www.turcom.com.tr/favicoTurcom.ico" />
+    <style>
+        .btn:hover {
+            transition: 0.3s !important;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="container-scroller">
+        <!-- partial:../../partials/_navbar.html -->
+        <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+                <div class="me-3">
+                </div>
+                <div>
+                    <a class="navbar-brand brand-logo" id="logo" href="../../">
+                        <img src="https://www.turcom.com.tr/images/turcom-logo.png" style="width:300px; height:auto;" alt="logo" />
+                    </a>
+                    <a class="navbar-brand brand-logo-mini" id="_logo" href="../../">
+                        <img src="https://www.turcom.com.tr/images/turcom-logo.png" alt="logo" />
+                    </a>
+                </div>
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-top">
+                <ul class="navbar-nav">
+                    <li class="font-weight-semibold d-none d-lg-block ms-0">
+
+                    </li>
+                </ul>
+
+            </div>
+        </nav>
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <!-- partial:../../partials/_sidebar.html -->
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            </nav>
+            <!-- partial -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <h4>Problems</h4>
+                    <br />
+                    <br />
+                    <div class="row">
+
+
+                        <div class="col-md-6 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-danger">Critical Problems</h4>
+                                    <p class="card-description text-primary">
+                                        I have found some critical mistakes.
+                                    </p>
+                                </div>
+                                <div class="card-body text-danger">
+                                    <ul>
+                                        <li>API is not secure. The security key is not being used.</li>
+                                        <li>The Http class I have prepared for using the API can only perform Post and Get operations. Therefore, every operation in the API is based on HttpPost or HttpGet.</li>
+                                        <li>There is a big code mess.</li>
+                                        <li>The Add-Migration and Update-Database commands only work in the API layer.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+                        <div class="col-md-6 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-warning">Average Problems</h4>
+                                    <p class="card-description text-primary"> Problems I consider to be average problems. </p>
+                                </div>
+                                <div class="card-body text-warning">
+                                    <ul>
+                                        <li>I use HttpClient to connect to the API, I don't know how correct it is.</li>
+                                        <li>I am not sure if I am using the Identity Framework properly. The Claims created are not visible in the database tables.</li>
+                                        <li>In the presentation layer, there is a login process and in some places, it operates using its own code instead of using the API.</li>
+                                        <li>By using more partial views, code organization could be ensured.</li>
+                                        <li>I think I don't fully adhere to the DDD architecture.</li>
+                                        <li>The API Swagger controllers could have more meaningful names.</li>
+                                        <li>I have deviated a bit from the DRY(Don't Repeat Yourself) rules.</li>
+                                        <li>I couldn't fully utilize the features of the Identity Framework, such as email verification and changing passwords.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-info">Minimal Problems</h4>
+                                    <p class="card-description text-primary">Problems I consider to be minor problems. </p>
+                                </div>
+                                <div class="card-body text-info">
+                                    <ul>
+                                        <li>The responsive design in the UI is not that great.</li>
+                                        <li>There could be a single context instead of different contexts for Identity and Entity.</li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3"></div>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6 text-center stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-primary">
+                                        Setup
+                                    </h4>
+                                </div>
+                                <div class="card-body text-success" style="text-align:left !important;">
+                                    <ul>
+                                        <li>
+                                            <ul>
+                                                <li style="list-style:none">&nbsp;</li>
+                                                <li>Open API Project</li>
+                                                <li>Goto API/Use/Http.cs</li>
+                                                <li>Set swaggerPort</li>
+                                            </ul>
+                                        </li>
+                                        <li style="list-style:none">&nbsp;</li>
+                                        
+                                        <li>
+                                            <ul>
+                                                <li style="list-style:none">&nbsp;</li>
+                                                <li>Open Domain Project</li>
+                                                <li>Open DbConnections.cs class</li>
+                                                <li>Set connection strings</li>
+                                            </ul>
+                                        </li>
+
+
+                                        <li style="list-style:none">&nbsp;</li>
+                                        <li>
+                                            <ul>
+                                                <li style="list-style:none">&nbsp;</li>
+                                                <li>Open Nuget Package Console</li>
+                                                <li>Select API as the default project</li>
+                                                <li>PM> update-database -Context EfDbContext</li>
+                                                <li>PM> update-database -Context IdentityDbContext</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-3"></div>
+                        <div class="col-md-3"></div>
+
+                        <div class="col-md-6 text-center stretch-card" style="padding-top:30px;">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title text-success">
+                                        The resources I use.
+                                    </h4>
+                                    <p class="card-description text-primary">The resources I used in developing the project, there may be some that are missing. </p>
+                                </div>
+                                <div class="card-body text-success" style="text-align:left !important;">
+                                    <ul>
+                                        <li>
+                                            The general usage of Asp.net Core, MVC, Entity Framework, and Identity Framework.
+                                            <ul>
+                                                <li>
+                                                    <a>https://www.youtube.com/watch?v=HXKnDUb06iw&list=PLKnjBHu2xXNNkinaVhPqPZG0ubaLN63ci</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li style="list-style:none;">&nbsp;</li>
+                                        <li>
+                                            Front-End Template
+                                            <ul><li><a>https://www.bootstrapdash.com/product/star-admin-pro</a></li></ul>
+                                        </li>
+                                        <li style="list-style:none;">&nbsp;</li>
+                                        <li>
+                                            Identity Framework
+                                            <ul>
+                                                <li><a>https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-6.0&tabs=visual-studio</a></li>
+                                                <li><a>https://www.youtube.com/watch?v=ghzvSROMo_M&ab_channel=DigitalTechJoint</a></li>
+                                                <li><a>https://www.youtube.com/watch?v=KylxLlXsKjE&ab_channel=RavindraDevrani</a></li>
+                                                <li><a>https://www.youtube.com/watch?v=1faF6z0aBqc&t=1011s</a></li>
+                                                <li><a>https://www.youtube.com/watch?v=WpymlVGek94</a></li>
+                                            </ul>
+                                        </li>
+                                        <li style="list-style:none;">&nbsp;</li>
+                                        <li>
+                                            Domain Driven Design
+                                            <ul>
+                                                <li><a>https://www.youtube.com/watch?v=_6msA3h2rFQ</a></li>
+                                                <li><a class="text-danger">https://www.youtube.com/watch?v=cC247RMhnS0&t=15335s</a></li>
+                                            </ul>
+                                        </li>
+                                        <li style="list-style:none;">&nbsp;</li>
+                                        <li>
+                                            Chat GPT
+                                            <ul class="text-secondary">
+                                                <li>General Translation</li>
+                                                <li>General Debugging</li>
+                                                <li>Code consultation</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+
+                </div>
+
+
+                <!-- partial -->
+            </div>
+            <!-- main-panel ends -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+    <script src="~/assets/vendors/js/vendor.bundle.base.js"></script>
+    <script>
+$("a").each(function () {
+            var text = $(this).text();
+            $(this).attr("href", text);
+            $(this).attr("target", "_blank");
+            if ($(this).attr("class") == null) {
+                $(this).attr("class", "text-secondary");
+            }
+
+            $("#logo").attr("href", "../../");
+            $("#logo").attr("target", null);
+            $("#_logo").attr("target", null);
+            $("#_logo").attr("href", "../../");
+});
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewData["Title"] = "Category";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+@model Domain.Models.EntityFramework.Menu
+
+
+
+<h3>Editing <font class="text-capitalize text-success">@Model.MenuName</font> Category</h3>
+
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            @*<h4 class="card-title">Material Form</h4>*@
+            <p class="card-description">
+            </p>
+            <form method="post" action="#" class="forms-sample material-form">
+
+                @Html.HiddenFor(x => x.ID)
+                @Html.HiddenFor(x => x.AuthorizeRole)
+                @Html.HiddenFor(x => x.MenuName)
+
+                <div class="form-group">
+                    @Html.TextBoxFor(x => x.Title, new { @required = "required" })
+                    <label for="input" class="control-label text-success">Title</label><i class="bar"></i>
+
+                    @*<input type="text" required="required">*@
+                </div>
+                <div class="form-group">
+                    @*<textarea required="required"></textarea>*@
+                    @Html.TextAreaFor(x => x.Content, new { @required = "required" })
+
+                    <label for="textarea" class="control-label text-success">Content</label><i class="bar"></i>
+                </div>
+
+                <div class="button-container text-center">
+                    <button type="submit" class="btn btn-outline-primary"><span>Save</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/assets/vendors/js/vendor.bundle.base.js"></script>
+<script src="~/assets/vendors/jquery-toast-plugin/jquery.toast.min.js"></script>
+
+@if (ViewBag.success != null && ViewBag.success)
+{
+    <script>
+        $.toast({
+            heading: 'Success',
+            text: 'The changes you made have been saved..',
+            showHideTransition: 'slide',
+            icon: 'success',
+            loaderBg: '#f96868',
+            position: 'top-right'
+        })
+    </script>
+}
